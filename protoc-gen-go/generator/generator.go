@@ -558,6 +558,7 @@ type Generator struct {
 	Param             map[string]string // Command-line parameters.
 	PackageImportPath string            // Go import path of the package we're generating code for
 	ImportPrefix      string            // String to prefix to imported package file names.
+	PackagePrefix     string
 	ImportMap         map[string]string // Mapping from .proto file name to import path
 
 	Pkg map[string]string // The names under which we import support packages
@@ -614,6 +615,8 @@ func (g *Generator) CommandLineParameters(parameter string) {
 	pluginList := "none" // Default list of plugin names to enable (empty means all).
 	for k, v := range g.Param {
 		switch k {
+		case "package_prefix":
+			g.PackagePrefix = v
 		case "import_prefix":
 			g.ImportPrefix = v
 		case "import_path":
@@ -1320,7 +1323,11 @@ func (g *Generator) generateImports() {
 	// We almost always need a proto import.  Rather than computing when we
 	// do, which is tricky when there's a plugin, just import it and
 	// reference it later. The same argument applies to the fmt and math packages.
-	g.P("import " + g.Pkg["proto"] + " " + strconv.Quote(g.ImportPrefix+"github.com/golang/protobuf/proto"))
+	if g.PackagePrefix == "" {
+		g.P("import " + g.Pkg["proto"] + " " + strconv.Quote(g.ImportPrefix+"github.com/golang/protobuf/proto"))
+	} else {
+		g.P("import " + g.Pkg["proto"] + " " + strconv.Quote("github.com/golang/protobuf/proto"))
+	}
 	g.P("import " + g.Pkg["fmt"] + ` "fmt"`)
 	g.P("import " + g.Pkg["math"] + ` "math"`)
 	for i, s := range g.file.Dependency {
@@ -1335,7 +1342,13 @@ func (g *Generator) generateImports() {
 		if substitution, ok := g.ImportMap[s]; ok {
 			importPath = substitution
 		}
-		importPath = g.ImportPrefix + importPath
+		if g.PackagePrefix != "" {
+			if strings.HasPrefix(importPath, g.PackagePrefix) {
+				importPath = g.ImportPrefix + importPath
+			}
+		} else {
+			importPath = g.ImportPrefix + importPath
+		}
 		// Skip weak imports.
 		if g.weak(int32(i)) {
 			g.P("// skipping weak import ", fd.PackageName(), " ", strconv.Quote(importPath))
