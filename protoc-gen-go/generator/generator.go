@@ -1,7 +1,7 @@
 // Go support for Protocol Buffers - Google's data interchange format
 //
 // Copyright 2010 The Go Authors.  All rights reserved.
-// https://github.com/golang/protobuf
+// https://github.com/ss-limafriyadi/protobuf
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are
@@ -52,10 +52,10 @@ import (
 	"unicode"
 	"unicode/utf8"
 
-	"github.com/golang/protobuf/proto"
+	"github.com/ss-limafriyadi/protobuf/proto"
 
-	"github.com/golang/protobuf/protoc-gen-go/descriptor"
-	plugin "github.com/golang/protobuf/protoc-gen-go/plugin"
+	"github.com/ss-limafriyadi/protobuf/protoc-gen-go/descriptor"
+	plugin "github.com/ss-limafriyadi/protobuf/protoc-gen-go/plugin"
 )
 
 // generatedCodeVersion indicates a version of the generated code.
@@ -617,6 +617,7 @@ func (g *Generator) CommandLineParameters(parameter string) {
 		switch k {
 		case "prefix_path":
 			g.PrefixPath = v
+			fmt.Printf("PrefixPath %s", g.PrefixPath)
 		case "import_prefix":
 			g.ImportPrefix = v
 		case "import_path":
@@ -1324,9 +1325,9 @@ func (g *Generator) generateImports() {
 	// do, which is tricky when there's a plugin, just import it and
 	// reference it later. The same argument applies to the fmt and math packages.
 	if g.PrefixPath == "" {
-		g.P("import " + g.Pkg["proto"] + " " + strconv.Quote(g.ImportPrefix+"github.com/golang/protobuf/proto"))
+		g.P("import " + g.Pkg["proto"] + " " + strconv.Quote(g.ImportPrefix+"github.com/ss-limafriyadi/protobuf/proto"))
 	} else {
-		g.P("import " + g.Pkg["proto"] + " " + strconv.Quote("github.com/golang/protobuf/proto"))
+		g.P("import " + g.Pkg["proto"] + " " + strconv.Quote("github.com/ss-limafriyadi/protobuf/proto"))
 	}
 	g.P("import " + g.Pkg["fmt"] + ` "fmt"`)
 	g.P("import " + g.Pkg["math"] + ` "math"`)

@@ -52,8 +52,8 @@ import (
 	"io/ioutil"
 	"os"
 
-	"github.com/golang/protobuf/proto"
-	"github.com/golang/protobuf/protoc-gen-go/generator"
+	"github.com/ss-limafriyadi/protobuf/proto"
+	"github.com/ss-limafriyadi/protobuf/protoc-gen-go/generator"
 )
 
 func main() {
